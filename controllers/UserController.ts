@@ -1,13 +1,11 @@
 import express from 'express';
-import mongoose from 'mongoose';
 import jwt from 'jsonwebtoken';
 
 import { validationResult } from 'express-validator';
 import { UserModel, UserModelInterface, UserModelDocumentInterface } from '../models/UserModel';
 import { generateMD5 } from '../utils/generateHash';
 import { sendEmail } from '../utils/sendEmail';
-
-const isValidObjectId = mongoose.Types.ObjectId.isValid;
+import { isValidObjectId } from '../utils/isValidObjectId';
 
 class UserController {
   async index(_: any, res: express.Response): Promise<void> {
@@ -79,7 +77,7 @@ class UserController {
           subject: 'Подтверждение почты Twitter Clone Tutorial',
           html: `Для того, чтобы подтвердить почту, перейдите <a href="http://localhost:${
             process.env.PORT || 8888
-          }/users/verify?hash=${data.confirmHash}">по этой ссылке</a>`,
+          }/auth/verify?hash=${data.confirmHash}">по этой ссылке</a>`,
         },
         (err: Error | null) => {
           if (err) {
@@ -140,7 +138,7 @@ class UserController {
         data: {
           ...user,
           token: jwt.sign({ data: req.user }, process.env.SECRET_KEY || '123', {
-            expiresIn: '30d',
+            expiresIn: '30 days',
           }),
         },
       });

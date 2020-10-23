@@ -30,13 +30,19 @@ passport.use(
   new JWTstrategy(
     {
       secretOrKey: process.env.SECRET_KEY || '123',
-      jwtFromRequest: ExtractJwt.fromUrlQueryParameter('token'),
+      jwtFromRequest: ExtractJwt.fromHeader('token'),
     },
-    async (payload, done) => {
+    async (payload: { data: UserModelInterface }, done): Promise<void> => {
       try {
-        return done(null, payload.user);
+        const user = await UserModel.findById(payload.data._id).exec();
+
+        if (user) {
+          return done(null, user);
+        }
+
+        done(null, false);
       } catch (error) {
-        done(error);
+        done(error, false);
       }
     },
   ),
