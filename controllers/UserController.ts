@@ -114,10 +114,11 @@ class UserController {
 
       if (user) {
         user.confirmed = true;
-        user.save();
+        await user.save();
 
         res.json({
           status: 'success',
+          data: user.toJSON(),
         });
       } else {
         res.status(404).json({ status: 'error', message: 'Пользователь не найден' });
