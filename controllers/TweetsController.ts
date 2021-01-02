@@ -8,7 +8,7 @@ import { UserModelInterface } from '../models/UserModel';
 class TweetsController {
   async index(_: any, res: express.Response): Promise<void> {
     try {
-      const tweets = await TweetModel.find({}).populate('user').sort({ 'createdAt': '-1' }).exec();
+      const tweets = await TweetModel.find({}).populate('user').sort({ createdAt: '-1' }).exec();
 
       res.json({
         status: 'success',
